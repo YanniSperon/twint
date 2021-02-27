@@ -4,6 +4,13 @@ import time
 import requests
 import logging as logme
 
+proxy_host = "proxy.crawlera.com"
+proxy_port = "8010"
+proxy_auth = "REPLACE WITH AUTH CODE"
+proxy_servers = {
+    "https": f"http://{proxy_auth}@{proxy_host}:{proxy_port}/",
+    "http": f"http://{proxy_auth}@{proxy_host}:{proxy_port}/"
+}
 
 class TokenExpiryException(Exception):
     def __init__(self, msg):
@@ -19,6 +26,8 @@ class Token:
     def __init__(self, config):
         self._session = requests.Session()
         self._session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'})
+        self._session.proxies.update(proxy_servers)
+        self._session.verify = 'zyte-proxy-ca.crt'
         self.config = config
         self._retries = 5
         self._timeout = 10
